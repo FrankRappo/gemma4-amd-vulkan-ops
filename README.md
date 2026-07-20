@@ -16,7 +16,10 @@ Vision bot.
 
 Claw Code project sessions and their Telegram bridge are maintained separately
 in [`FrankRappo/claw-code-parity`](https://github.com/FrankRappo/claw-code-parity).
-The two services communicate through an authenticated localhost-only bridge.
+The agent now runs in a dedicated 8-vCPU/16-GiB sandbox VM and reaches Gemma
+through a restricted SSH tunnel to the model host's loopback API. The Telegram
+side reaches the agent through a separately authenticated localhost-only
+reverse bridge. See [`docs/deployment.md`](docs/deployment.md).
 
 ## Verified capacity profile
 
