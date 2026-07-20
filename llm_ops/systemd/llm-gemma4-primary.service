@@ -1,0 +1,21 @@
+[Unit]
+Description=Gemma 4 31B two-GPU multimodal llama.cpp endpoint
+After=network-online.target llm-stability-setup.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/mnt/ssd/llm-distributed
+EnvironmentFile=-/etc/default/llm-gemma4-primary
+ExecStart=/mnt/ssd/llm-distributed/run-gemma4-31b-2gpu-vision.sh
+Restart=on-failure
+RestartSec=10
+TimeoutStartSec=900
+TimeoutStopSec=120
+KillSignal=SIGINT
+LimitNOFILE=1048576
+MemoryMax=48G
+OOMPolicy=stop
+
+[Install]
+WantedBy=multi-user.target
