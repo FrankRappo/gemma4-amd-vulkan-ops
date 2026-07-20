@@ -9,7 +9,7 @@ Vision bot.
 - two-node Vulkan/RPC launchers and systemd units;
 - adaptive Gemma 4 Vision at 280–1120 image tokens;
 - RAM prompt cache disabled (`--cache-ram 0`);
-- Q4 KV cache and configurable context/parallel slots;
+- Q4 KV cache and a measured two-slot 160K-context production profile;
 - deterministic benchmark and configuration regression tests;
 - Telegram text, PNG and JPEG screenshot support;
 - capacity and rollback runbooks under `docs/`.
@@ -17,6 +17,15 @@ Vision bot.
 Claw Code project sessions and their Telegram bridge are maintained separately
 in [`FrankRappo/claw-code-parity`](https://github.com/FrankRappo/claw-code-parity).
 The two services communicate through an authenticated localhost-only bridge.
+
+## Verified capacity profile
+
+The current launcher defaults to `CTX_SIZE=327680`, `PARALLEL=2`: two 163840
+token slots. The measured minimum free VRAM was 1.20 GiB, and two simultaneous
+requests delivered 19.272 token/s aggregate (+71.98% over the former one-slot
+baseline). RAM prompt caching remains off. See
+[`docs/context-parallel-capacity.md`](docs/context-parallel-capacity.md) for the
+fixtures, rejected larger profiles, safety reasoning, and compaction boundary.
 
 ## Quick verification
 

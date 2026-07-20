@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-07-20",
+  "units": {
+    "memory": "bytes",
+    "throughput": "generated_tokens_per_second",
+    "time": "seconds"
+  },
+  "baseline": {
+    "ctx_size_total": 32768,
+    "parallel_slots": 1,
+    "single_request": {
+      "wall": 11.528,
+      "throughput": 11.736
+    },
+    "two_request_control": {
+      "wall": 22.846,
+      "aggregate_throughput": 11.206
+    }
+  },
+  "rejected_candidates": [
+    {
+      "ctx_size_total": 524288,
+      "parallel_slots": 2,
+      "context_per_slot": 262144,
+      "reason": "only_about_75_5_mib_free_vram_after_startup"
+    },
+    {
+      "ctx_size_total": 393216,
+      "parallel_slots": 2,
+      "context_per_slot": 196608,
+      "idle_free_vram": 974364672,
+      "reason": "idle_reserve_below_1_gib_guard"
+    }
+  ],
+  "selected_candidate": {
+    "ctx_size_total": 327680,
+    "parallel_slots": 2,
+    "context_per_slot": 163840,
+    "startup_wall": 59.209,
+    "service_restarts": 0,
+    "idle_free_vram": 1813229568,
+    "single_request": {
+      "completion_tokens": 128,
+      "wall": 11.506,
+      "throughput": 11.738
+    },
+    "two_concurrent_text_requests": {
+      "completion_tokens_each": 128,
+      "wall": 13.283,
+      "request_walls": [13.264, 13.077],
+      "request_throughputs": [10.844, 10.358],
+      "aggregate_throughput": 19.272,
+      "aggregate_gain_percent_vs_baseline": 71.98,
+      "minimum_free_vram": 1799958528
+    },
+    "dense_vision": {
+      "input_resolution": "1920x1080",
+      "prompt_tokens": 953,
+      "completion_tokens": 52,
+      "wall": 14.601,
+      "minimum_free_vram": 1307303936,
+      "fixture_fields_recovered": ["date", "code", "total"]
+    },
+    "concurrent_dense_vision_and_text": {
+      "wall": 21.767,
+      "vision_wall": 15.393,
+      "text_wall": 21.756,
+      "text_completion_tokens": 128,
+      "minimum_free_vram": 1307303936
+    },
+    "long_context": {
+      "input_characters": 180082,
+      "prompt_tokens": 36046,
+      "wall": 470.322,
+      "prompt_processing_throughput": 76.765,
+      "marker_recovered": true,
+      "minimum_free_vram": 1295724544
+    },
+    "cgroup_memory_events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0
+    },
+    "ram_prompt_cache": false,
+    "claw_auto_compact_input_tokens": 110000
+  }
+}

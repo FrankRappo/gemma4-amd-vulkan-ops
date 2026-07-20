@@ -8,8 +8,10 @@ MMPROJ=${MMPROJ:-$BASE/models/vision/mmproj-gemma-4-31B-it-Q8_0.gguf}
 DRAFT_MODEL=${DRAFT_MODEL:-$BASE/models/draft/gemma-4-31B-it-assistant-Q8_0.gguf}
 RPC_ADDR=${RPC_ADDR:-10.30.0.2:50053}
 RPC_WAIT_SECONDS=${RPC_WAIT_SECONDS:-180}
-CTX_SIZE=${CTX_SIZE:-32768}
-PARALLEL=${PARALLEL:-1}
+# Verified production profile for two 16 GiB-class AMD GPUs. CTX_SIZE is the
+# total KV-cache budget; llama.cpp divides it equally between parallel slots.
+CTX_SIZE=${CTX_SIZE:-327680}
+PARALLEL=${PARALLEL:-2}
 HOST=${HOST:-127.0.0.1}
 PORT=${PORT:-8080}
 ENABLE_MTP=${ENABLE_MTP:-0}

@@ -65,6 +65,8 @@ class GemmaVisionLauncherTest(unittest.TestCase):
 
         args = result.stdout.splitlines()
         for flag, value in (
+            ("--ctx-size", "327680"),
+            ("--parallel", "2"),
             ("--batch-size", "1280"),
             ("--ubatch-size", "1280"),
             ("--image-min-tokens", "280"),

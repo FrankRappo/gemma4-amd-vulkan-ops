@@ -5,18 +5,22 @@ These files define the reversible two-host deployment:
 - `srv1`: one multimodal `llama-server` on `127.0.0.1:8080`;
 - `srv2`: one Vulkan RPC worker on the private `10.30.0.0/24` link;
 - model layers are split equally between `Vulkan0` and `RPC0`;
-- the default profile is 32K context, one slot and Q4 KV cache;
+- the measured production profile is a 327680-token total context split into
+  two independent 163840-token slots, with Q4 KV cache;
 - Gemma 4 Vision uses a `280–1120` visual-token range for high-detail OCR;
 - logical, physical and mtmd image batch limits default to `1280`, so the full
   1120-token non-causal image chunk fits without splitting;
 - host-memory prompt caching remains disabled (`--cache-ram 0`);
 - MTP is present as an opt-in benchmark flag and is disabled by default.
 
-The 32K/one-slot default remains intentional after a 2026-07-20 capacity probe.
-`CTX_SIZE=524288`, `PARALLEL=2` successfully created two 256K slots, but left
-only 75.5 MiB free VRAM on srv1 and was rolled back before Vision/load testing.
-Do not deploy that maximum profile. The next staged candidates are 192K, 160K
-and 128K per slot, documented in
+The 160K/two-slot profile was selected by a 2026-07-20 staged capacity probe.
+It retained at least 1.20 GiB free VRAM across concurrent text, dense Vision,
+and a 36046-token long prompt. Aggregate generation throughput for two
+simultaneous requests was 19.272 token/s versus 11.206 token/s for the previous
+32K/one-slot baseline (+71.98%); single-request speed stayed essentially flat.
+The 192K/two-slot candidate was rejected at only 929 MiB idle reserve, and the
+native-maximum 256K/two-slot allocation was rejected at about 75.5 MiB. Full
+results and rollback reasoning are documented in
 [`../../docs/context-parallel-capacity.md`](../../docs/context-parallel-capacity.md).
 
 The high-detail profile follows Google's documented `max_soft_tokens=1120`
