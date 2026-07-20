@@ -24,6 +24,12 @@ in chat history or on disk.
 
 ## Configuration and safety
 
+The model persona is loaded from `SYSTEM_PROMPT_FILE` on every request. The
+tracked source is `prompts/gemma4-abliterated-system-prompt.txt`; use the
+same text for the Claw provider so ordinary chat and Agent mode do not
+drift. Full behavior and deployment steps are documented in
+[`../../docs/system-prompt.md`](../../docs/system-prompt.md).
+
 Keep the production environment outside the checkout (for example under
 `/etc/default/`). It must not be copied to Git. `MAX_IMAGE_BYTES` is optional and defaults to 10 MiB. Only JPEG and
 PNG are accepted.

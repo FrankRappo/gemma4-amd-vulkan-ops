@@ -10,10 +10,14 @@ Required environment:
 TELEGRAM_BOT_TOKEN=replace-me
 BOT_ALLOWED_USER_IDS=123456789
 LLM_BASE_URL=http://127.0.0.1:18080
+SYSTEM_PROMPT_FILE=/opt/tg-gemma-bot/gemma4-abliterated-system-prompt.txt
 MAX_TOKENS=4096
 MAX_RESPONSE_TOKENS=8192
 MAX_IMAGE_BYTES=10485760
 ```
+
+`SYSTEM_PROMPT_FILE` points to the tracked, strengthened deployment prompt. It
+is hot-reloaded for every model request; see [`system-prompt.md`](./system-prompt.md).
 
 The bot validates declared and streamed size, verifies PNG/JPEG signatures, and
 does not retain base64 image payloads in conversation history. Bind the model

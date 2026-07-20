@@ -42,3 +42,5 @@ python3 llm_ops/systemd/verify-systemd-units.py
 
 This public repository intentionally contains no credentials, production IP
 addresses, private data, or model weights. Review `SECURITY.md` before deployment.
+
+Deployment prompt behavior is documented in [`docs/system-prompt.md`](docs/system-prompt.md).
