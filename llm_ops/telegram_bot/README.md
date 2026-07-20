@@ -4,6 +4,11 @@ This directory is the tracked deployment source for the dependency-free Telegram
 bridge running on the jump host. It reaches the srv1 `llama-server` through the
 jump-local `http://127.0.0.1:18080` tunnel.
 
+Long Gemma answers are sent losslessly as ordered Telegram chunks of at most
+3900 characters. The default output budget is 4096 tokens and `/tokens` may
+raise one chat to 8192; this changes model generation length, not the Telegram
+chunk size.
+
 ## Supported input
 
 - text messages;
