@@ -18,15 +18,17 @@ non-public.
 
 Keep the Claw bridge concurrency at two so it matches the two server slots.
 Keep automatic Claw compaction at 110000 input tokens for the measured 163840-
-token slot. The deployed client VM is limited to 8 vCPU and 16 GiB RAM; the
+token slot. The Claw completion ceiling is 32000 tokens, matching the current
+default Opus budget; short responses still stop naturally. The deployed client
+VM is limited to 8 vCPU and 16 GiB RAM; the
 rejected 32 GiB client profile would leave insufficient headroom on the current
 62 GiB hypervisor. The smaller secondary GPU server is not a suitable Claw VM
 host.
 
-The sandbox has no model weights, GPU passthrough, Telegram token, cluster
-credential, or GitHub write credential. Its public internet access is for agent
-tools and package installation; private-network egress is denied except for
-narrow tunnel and management rules. Detailed migration, service templates,
+The client VM has no model weights or GPU passthrough. Its unrestricted Claw
+profile exposes the complete tool registry, public and private egress, and
+operator-supplied credentials inherited from root-owned environment files.
+Detailed migration, service templates,
 rollback, and reboot/parallel/OCR evidence live in
 [`FrankRappo/claw-code-parity`](https://github.com/FrankRappo/claw-code-parity/blob/main/integrations/telegram/DEDICATED-SANDBOX-VM.md).
 

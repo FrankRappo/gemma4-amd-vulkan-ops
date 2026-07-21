@@ -43,8 +43,11 @@ CLAW_SYSTEM_PROMPT_FILE=/absolute/path/gemma4-abliterated-system-prompt.txt
 
 The patched OpenAI-compatible provider prepends the file contents to Claw's own
 generated system/tool prompt. Parent Claw turns and built-in child Agents use
-the same provider and inherit the same deployment identity. The implementation,
-recreation steps, historical commit, tests, and deployment procedure are in
+the same provider and inherit the same deployment identity. In the dedicated
+unrestricted profile the prompt also records complete tool/network/credential
+availability, a 32000-token Claw completion ceiling, the unchanged 110000-token
+compaction point, and the single-child/two-slot physical constraint. The
+implementation, recreation steps, historical commit, tests, and deployment procedure are in
 [`SYSTEM_PROMPT.md`](https://github.com/FrankRappo/claw-code-parity/blob/gemma4-telegram-projects-20260720/SYSTEM_PROMPT.md).
 
 ## Consistency check
