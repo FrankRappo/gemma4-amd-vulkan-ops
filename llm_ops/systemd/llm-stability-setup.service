@@ -6,6 +6,7 @@ After=network-online.target
 [Service]
 Type=oneshot
 ExecStart=/usr/local/sbin/llm-stability-setup.sh
+ExecStart=/usr/local/sbin/llm-amd-compute-profile.sh enable
 RemainAfterExit=yes
 
 [Install]

@@ -1,0 +1,64 @@
+{
+  "label": "b10076-fa-local-lds",
+  "base_url": "http://127.0.0.1:8080",
+  "configuration": {
+    "target_prompt_tokens": 4096,
+    "generation_tokens": 128,
+    "samples": 3,
+    "temperature": 0,
+    "top_k": 1,
+    "seed": 42,
+    "cache_prompt": false,
+    "forced_single_path_grammar": true,
+    "idle_window_seconds": 5.0
+  },
+  "summary": {
+    "samples": 3,
+    "median_prompt_tps": 330.6339767225606,
+    "mean_prompt_tps": 329.67676619418705,
+    "median_generation_tps": 11.026340376580535,
+    "mean_generation_tps": 11.02468497627087,
+    "total_wall_seconds": 72.12553925695829
+  },
+  "results": [
+    {
+      "sample": 1,
+      "requested_prompt_tokens": 4094,
+      "prompt_tokens": 4095,
+      "prompt_ms": 12529.067,
+      "prompt_per_second": 326.8399793855361,
+      "predicted_tokens": 128,
+      "predicted_ms": 11608.566,
+      "predicted_per_second": 11.026340376580535,
+      "wall_seconds": 24.147386230994016,
+      "output_sha256": "c96b7ca55b1ccdc263f734caf3fcab47f5e95674e3a3c3a5361316eb91a2c7a8",
+      "output": " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    },
+    {
+      "sample": 2,
+      "requested_prompt_tokens": 4094,
+      "prompt_tokens": 4095,
+      "prompt_ms": 12350.842,
+      "prompt_per_second": 331.5563424744645,
+      "predicted_tokens": 128,
+      "predicted_ms": 11606.746,
+      "predicted_per_second": 11.028069365867058,
+      "wall_seconds": 23.967278494965285,
+      "output_sha256": "c96b7ca55b1ccdc263f734caf3fcab47f5e95674e3a3c3a5361316eb91a2c7a8",
+      "output": " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    },
+    {
+      "sample": 3,
+      "requested_prompt_tokens": 4094,
+      "prompt_tokens": 4095,
+      "prompt_ms": 12385.297,
+      "prompt_per_second": 330.6339767225606,
+      "predicted_tokens": 128,
+      "predicted_ms": 11615.619,
+      "predicted_per_second": 11.019645186365013,
+      "wall_seconds": 24.01087453099899,
+      "output_sha256": "c96b7ca55b1ccdc263f734caf3fcab47f5e95674e3a3c3a5361316eb91a2c7a8",
+      "output": " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    }
+  ]
+}

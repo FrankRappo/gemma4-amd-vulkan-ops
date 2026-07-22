@@ -8,5 +8,6 @@ secrets/
 .local-git-auth/
 logs/
 artifacts/
+.omx/
 *.gguf
 *.bin

@@ -1,0 +1,22 @@
+diff --git a/ggml/src/ggml-vulkan/ggml-vulkan.cpp b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+index 54b0b37cf..000000000 100644
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -3531,7 +3531,16 @@ static vk_fa_tuning_params get_fa_tuning_params_coopmat1(const vk_device& device
+     const uint32_t D_lsb = D ^ (D & (D-1));  // extract lowest set bit
+     result.d_split = std::min(std::min(result.subgroup_size, 8u), D_lsb / 4);
+
+-    result.shmem_staging = (device->vendor_id == VK_VENDOR_ID_NVIDIA && hsk < 256 && hsv < 256) ? 1 : 0;
++    // Gemma 4 local-attention layers use HSK=HSV=256. On GFX1200 their
++    // complete K/V tile fits in the 64 KiB LDS budget, so stage it once for
++    // reuse by all four cooperative-matrix subgroups. The 512-wide global
++    // layers stay on the direct-load path because their tile does not fit.
++    const bool gfx1200_local_attention =
++        device->vendor_id == VK_VENDOR_ID_AMD &&
++        device->properties.deviceID == 0x7590 &&
++        hsk == 256 && hsv == 256;
++    result.shmem_staging =
++        (device->vendor_id == VK_VENDOR_ID_NVIDIA && hsk < 256 && hsv < 256) || gfx1200_local_attention;
+
+     return result;
+ }

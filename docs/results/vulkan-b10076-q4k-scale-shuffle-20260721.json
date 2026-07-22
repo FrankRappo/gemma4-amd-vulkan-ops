@@ -1,0 +1,64 @@
+{
+  "label": "b10076-q4k-scale-shuffle",
+  "base_url": "http://127.0.0.1:8080",
+  "configuration": {
+    "target_prompt_tokens": 4096,
+    "generation_tokens": 128,
+    "samples": 3,
+    "temperature": 0,
+    "top_k": 1,
+    "seed": 42,
+    "cache_prompt": false,
+    "forced_single_path_grammar": true,
+    "idle_window_seconds": 5.0
+  },
+  "summary": {
+    "samples": 3,
+    "median_prompt_tps": 336.84532630194417,
+    "mean_prompt_tps": 336.1564570639108,
+    "median_generation_tps": 11.02586452468575,
+    "mean_generation_tps": 11.018826715010162,
+    "total_wall_seconds": 71.42483462532982
+  },
+  "results": [
+    {
+      "sample": 1,
+      "requested_prompt_tokens": 4094,
+      "prompt_tokens": 4095,
+      "prompt_ms": 12255.745,
+      "prompt_per_second": 334.1290145968278,
+      "predicted_tokens": 128,
+      "predicted_ms": 11636.293,
+      "predicted_per_second": 11.000066773842839,
+      "wall_seconds": 23.901688021142036,
+      "output_sha256": "c96b7ca55b1ccdc263f734caf3fcab47f5e95674e3a3c3a5361316eb91a2c7a8",
+      "output": " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    },
+    {
+      "sample": 2,
+      "requested_prompt_tokens": 4094,
+      "prompt_tokens": 4095,
+      "prompt_ms": 12156.915,
+      "prompt_per_second": 336.84532630194417,
+      "predicted_tokens": 128,
+      "predicted_ms": 11604.137,
+      "predicted_per_second": 11.030548846501897,
+      "wall_seconds": 23.770678432192653,
+      "output_sha256": "c96b7ca55b1ccdc263f734caf3fcab47f5e95674e3a3c3a5361316eb91a2c7a8",
+      "output": " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    },
+    {
+      "sample": 3,
+      "requested_prompt_tokens": 4094,
+      "prompt_tokens": 4095,
+      "prompt_ms": 12133.512,
+      "prompt_per_second": 337.49503029296045,
+      "predicted_tokens": 128,
+      "predicted_ms": 11609.067,
+      "predicted_per_second": 11.02586452468575,
+      "wall_seconds": 23.752468171995133,
+      "output_sha256": "c96b7ca55b1ccdc263f734caf3fcab47f5e95674e3a3c3a5361316eb91a2c7a8",
+      "output": " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    }
+  ]
+}

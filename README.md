@@ -13,6 +13,8 @@ Vision bot.
 - deterministic benchmark and configuration regression tests;
 - Telegram text, PNG and JPEG screenshot support;
 - capacity and rollback runbooks under `docs/`.
+- isolated Mesa/RADV and llama.cpp Vulkan candidate build/deploy tooling.
+- opt-in, parameterized MTP and ngram profiles that remain disabled by default.
 
 Claw Code project sessions and their Telegram bridge are maintained separately
 in [`FrankRappo/claw-code-parity`](https://github.com/FrankRappo/claw-code-parity).
@@ -44,3 +46,7 @@ This public repository intentionally contains no credentials, production IP
 addresses, private data, or model weights. Review `SECURITY.md` before deployment.
 
 Deployment prompt behavior is documented in [`docs/system-prompt.md`](docs/system-prompt.md).
+
+GFX1200 driver capability work, CUDA-to-Vulkan candidate provenance,
+deterministic A/B gates and rollback are documented in
+[`docs/vulkan-rdna4-performance.md`](docs/vulkan-rdna4-performance.md).

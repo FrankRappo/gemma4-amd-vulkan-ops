@@ -1,0 +1,64 @@
+diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp
+index 18d441ead40e11f7d86f924b8af138e31a20b8bb..a0c3865f10db3579f2953a34d5b2182c69a281e5 100644
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp
+@@ -11,7 +11,9 @@
+
+ layout(local_size_x_id = 0, local_size_y = 1, local_size_z = 1) in;
+
+-#if defined(DATA_A_Q2_0) || defined(DATA_A_QUANT_K)
++#if defined(DATA_A_Q4_K)
++#define K_PER_ITER 32
++#elif defined(DATA_A_Q2_0) || defined(DATA_A_QUANT_K)
+ #define K_PER_ITER 16
+ #elif defined(DATA_A_QUANT_LEGACY) || defined(DATA_A_MXFP4)
+ #define K_PER_ITER 8
+diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl
+index a5403ac82121d5294b3b46426ba46a900450efa3..da6c7269561ff29b633872a79bf464d001eb149c 100644
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl
+@@ -365,6 +365,36 @@ vec2 get_dm_scale(uint ib, uint iqs) {
+     return FLOAT_TYPEV2(data_a_packed32[ib_k].dm) * FLOAT_TYPEV2(scale_dm);
+ }
+
++#if defined(DATA_A_Q4_K)
++// CUDA's Q4_K MMVQ vector dot consumes both 16-value halves that share one
++// Q8_1 scale/min pair. Do the equivalent work natively in GLSL: one lane
++// owns the complete 32-value activation block, reuses dm/scale once, and
++// issues eight packed integer dot products. This is an independent Vulkan
++// implementation; no CUDA source or launch code is copied.
++FLOAT_TYPE mmvq_dot_product(const uint ib_a, const uint iqs) {
++    int32_t q_sum_lo = 0;
++    int32_t q_sum_hi = 0;
++
++    const i32vec4 qs_lo = repack4(ib_a, iqs * 4);
++    const i32vec4 qs_hi = repack4(ib_a, iqs * 4 + 4);
++    const vec2 dm_scale = get_dm_scale(ib_a, iqs * 4);
++
++    q_sum_lo += dotPacked4x8EXT(qs_lo.x, cache_b_qs[0]);
++    q_sum_lo += dotPacked4x8EXT(qs_lo.y, cache_b_qs[1]);
++    q_sum_lo += dotPacked4x8EXT(qs_lo.z, cache_b_qs[2]);
++    q_sum_lo += dotPacked4x8EXT(qs_lo.w, cache_b_qs[3]);
++    q_sum_hi += dotPacked4x8EXT(qs_hi.x, cache_b_qs[4]);
++    q_sum_hi += dotPacked4x8EXT(qs_hi.y, cache_b_qs[5]);
++    q_sum_hi += dotPacked4x8EXT(qs_hi.z, cache_b_qs[6]);
++    q_sum_hi += dotPacked4x8EXT(qs_hi.w, cache_b_qs[7]);
++
++    const float d = float(cache_b_ds.x) * float(dm_scale.x);
++    const float m = float(dm_scale.y) * float(cache_b_ds.y / 2);
++    const float lo = d * float(q_sum_lo) - m;
++    const float hi = d * float(q_sum_hi) - m;
++    return FLOAT_TYPE(lo + hi);
++}
++#else
+ FLOAT_TYPE mmvq_dot_product(const uint ib_a, const uint iqs) {
+     int32_t q_sum = 0;
+
+@@ -379,6 +409,7 @@ FLOAT_TYPE mmvq_dot_product(const uint ib_a, const uint iqs) {
+     return FLOAT_TYPE(float(cache_b_ds.x) * float(dm_scale.x) * float(q_sum) - float(dm_scale.y) * float(cache_b_ds.y / 2));
+ }
+ #endif
++#endif
+
+ #if defined(DATA_A_Q6_K)
+ // 2-byte loads for Q6_K blocks (210 bytes)

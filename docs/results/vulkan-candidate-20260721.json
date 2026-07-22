@@ -1,0 +1,64 @@
+{
+  "label": "b10012-mesa-25.3.6-radv-compute-forced",
+  "base_url": "http://127.0.0.1:8080",
+  "configuration": {
+    "target_prompt_tokens": 4096,
+    "generation_tokens": 128,
+    "samples": 3,
+    "temperature": 0,
+    "top_k": 1,
+    "seed": 42,
+    "cache_prompt": false,
+    "forced_single_path_grammar": true,
+    "idle_window_seconds": 20.0
+  },
+  "summary": {
+    "samples": 3,
+    "median_prompt_tps": 336.2651769941408,
+    "mean_prompt_tps": 335.70231450175777,
+    "median_generation_tps": 11.063792270385253,
+    "mean_generation_tps": 11.048310137061222,
+    "total_wall_seconds": 71.37984892399982
+  },
+  "results": [
+    {
+      "sample": 1,
+      "requested_prompt_tokens": 4094,
+      "prompt_tokens": 4095,
+      "prompt_ms": 12252.385,
+      "prompt_per_second": 334.22064357265947,
+      "predicted_tokens": 128,
+      "predicted_ms": 11569.055,
+      "predicted_per_second": 11.063997880552906,
+      "wall_seconds": 23.830916774924845,
+      "output_sha256": "c96b7ca55b1ccdc263f734caf3fcab47f5e95674e3a3c3a5361316eb91a2c7a8",
+      "output": " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    },
+    {
+      "sample": 2,
+      "requested_prompt_tokens": 4094,
+      "prompt_tokens": 4095,
+      "prompt_ms": 12165.012,
+      "prompt_per_second": 336.62112293847304,
+      "predicted_tokens": 128,
+      "predicted_ms": 11569.27,
+      "predicted_per_second": 11.063792270385253,
+      "wall_seconds": 23.74357904610224,
+      "output_sha256": "c96b7ca55b1ccdc263f734caf3fcab47f5e95674e3a3c3a5361316eb91a2c7a8",
+      "output": " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    },
+    {
+      "sample": 3,
+      "requested_prompt_tokens": 4094,
+      "prompt_tokens": 4095,
+      "prompt_ms": 12177.889,
+      "prompt_per_second": 336.2651769941408,
+      "predicted_tokens": 128,
+      "predicted_ms": 11618.26,
+      "predicted_per_second": 11.01714026024551,
+      "wall_seconds": 23.80535310297273,
+      "output_sha256": "c96b7ca55b1ccdc263f734caf3fcab47f5e95674e3a3c3a5361316eb91a2c7a8",
+      "output": " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    }
+  ]
+}

@@ -1,0 +1,452 @@
+{
+  "started_at": "2026-07-22T03:00:58.222975+00:00",
+  "health_before": {
+    "status": "ok"
+  },
+  "slots_before": [
+    {
+      "id": 0,
+      "n_ctx": 163840,
+      "speculative": false,
+      "is_processing": false,
+      "id_task": 125,
+      "n_prompt_tokens": 159027,
+      "n_prompt_tokens_processed": 159011,
+      "n_prompt_tokens_cache": 0,
+      "params": {
+        "seed": 42,
+        "temperature": 0.0,
+        "dynatemp_range": 0.0,
+        "dynatemp_exponent": 1.0,
+        "top_k": 1,
+        "top_p": 0.949999988079071,
+        "min_p": 0.05000000074505806,
+        "top_n_sigma": -1.0,
+        "xtc_probability": 0.0,
+        "xtc_threshold": 0.10000000149011612,
+        "typical_p": 1.0,
+        "repeat_last_n": 64,
+        "repeat_penalty": 1.0,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0,
+        "dry_multiplier": 0.0,
+        "dry_base": 1.75,
+        "dry_allowed_length": 2,
+        "dry_penalty_last_n": 163840,
+        "mirostat": 0,
+        "mirostat_tau": 5.0,
+        "mirostat_eta": 0.10000000149011612,
+        "max_tokens": 16,
+        "n_predict": 16,
+        "n_keep": 0,
+        "n_discard": 0,
+        "ignore_eos": false,
+        "stream": false,
+        "n_probs": 0,
+        "min_keep": 0,
+        "chat_format": "peg-gemma4",
+        "reasoning_format": "deepseek",
+        "reasoning_in_content": false,
+        "generation_prompt": "<|turn>model\n<|channel>thought\n<channel|>",
+        "samplers": [
+          "penalties",
+          "dry",
+          "top_n_sigma",
+          "top_k",
+          "typ_p",
+          "top_p",
+          "min_p",
+          "xtc",
+          "temperature"
+        ],
+        "speculative.types": "none",
+        "timings_per_token": false,
+        "post_sampling_probs": false,
+        "backend_sampling": false,
+        "lora": []
+      },
+      "next_token": [
+        {
+          "has_next_token": false,
+          "has_new_line": false,
+          "n_remain": 0,
+          "n_decoded": 16
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "n_ctx": 163840,
+      "speculative": false,
+      "is_processing": false,
+      "id_task": 124,
+      "n_prompt_tokens": 35535,
+      "n_prompt_tokens_processed": 35534,
+      "n_prompt_tokens_cache": 0,
+      "params": {
+        "seed": 42,
+        "temperature": 0.0,
+        "dynatemp_range": 0.0,
+        "dynatemp_exponent": 1.0,
+        "top_k": 1,
+        "top_p": 0.949999988079071,
+        "min_p": 0.05000000074505806,
+        "top_n_sigma": -1.0,
+        "xtc_probability": 0.0,
+        "xtc_threshold": 0.10000000149011612,
+        "typical_p": 1.0,
+        "repeat_last_n": 64,
+        "repeat_penalty": 1.0,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0,
+        "dry_multiplier": 0.0,
+        "dry_base": 1.75,
+        "dry_allowed_length": 2,
+        "dry_penalty_last_n": 163840,
+        "mirostat": 0,
+        "mirostat_tau": 5.0,
+        "mirostat_eta": 0.10000000149011612,
+        "max_tokens": 16,
+        "n_predict": 16,
+        "n_keep": 0,
+        "n_discard": 0,
+        "ignore_eos": false,
+        "stream": false,
+        "n_probs": 0,
+        "min_keep": 0,
+        "chat_format": "peg-gemma4",
+        "reasoning_format": "deepseek",
+        "reasoning_in_content": false,
+        "generation_prompt": "<|turn>model\n<|channel>thought\n<channel|>",
+        "samplers": [
+          "penalties",
+          "dry",
+          "top_n_sigma",
+          "top_k",
+          "typ_p",
+          "top_p",
+          "min_p",
+          "xtc",
+          "temperature"
+        ],
+        "speculative.types": "none",
+        "timings_per_token": false,
+        "post_sampling_probs": false,
+        "backend_sampling": false,
+        "lora": []
+      },
+      "next_token": [
+        {
+          "has_next_token": false,
+          "has_new_line": false,
+          "n_remain": 29,
+          "n_decoded": 3
+        }
+      ]
+    }
+  ],
+  "units_before": {
+    "primary": {
+      "MainPID": "662933",
+      "NRestarts": "0",
+      "MemoryCurrent": "1017978880"
+    },
+    "secondary": {
+      "MainPID": "2139044",
+      "NRestarts": "0",
+      "MemoryCurrent": "65622016"
+    },
+    "primary_exe": "/mnt/ssd/llm-distributed/candidates/llama-b10076/llama-server",
+    "secondary_exe": "/opt/llm-rpc/candidates/llama-b10076/ggml-rpc-server"
+  },
+  "disk_before": {
+    "primary": "/dev/sda         921846836 312400176 562545652      36% /mnt/ssd",
+    "secondary": "/dev/mapper/pve-root    98497780 28955452  64492780      31% /"
+  },
+  "dual_160k": {
+    "repeated_fragments": 79500,
+    "expected_prompt_tokens": 159012,
+    "overlap_wall_seconds": 1876.4919133740477,
+    "results": [
+      {
+        "wall_seconds": 1875.065753980074,
+        "usage": {
+          "completion_tokens": 16,
+          "prompt_tokens": 159012,
+          "total_tokens": 159028,
+          "prompt_tokens_details": {
+            "cached_tokens": 35535
+          }
+        },
+        "timings": {
+          "cache_n": 35535,
+          "prompt_n": 123477,
+          "prompt_ms": 1872373.212,
+          "prompt_per_token_ms": 15.163740712845307,
+          "prompt_per_second": 65.94678839060425,
+          "predicted_n": 16,
+          "predicted_ms": 1981.552,
+          "predicted_per_token_ms": 123.847,
+          "predicted_per_second": 8.074478994242897
+        },
+        "finish_reason": "length",
+        "content_sha256": "74196fbebce9f01f1ee48a3e00aa312e82f33883453f128a518fd1168e66d308",
+        "content_preview": "It looks like you've entered a very long string of zeros. If this"
+      },
+      {
+        "wall_seconds": 169.04049088899046,
+        "usage": {
+          "completion_tokens": 16,
+          "prompt_tokens": 159012,
+          "total_tokens": 159028,
+          "prompt_tokens_details": {
+            "cached_tokens": 159011
+          }
+        },
+        "timings": {
+          "cache_n": 159011,
+          "prompt_n": 1,
+          "prompt_ms": 5734.465,
+          "prompt_per_token_ms": 5734.465,
+          "prompt_per_second": 0.1743841840520432,
+          "predicted_n": 16,
+          "predicted_ms": 163287.581,
+          "predicted_per_token_ms": 10205.4738125,
+          "predicted_per_second": 0.09798663132868629
+        },
+        "finish_reason": "length",
+        "content_sha256": "661c925caef6672ed922da1398fda9b8d4062d010b6768b4ed0c63ab60bbe02b",
+        "content_preview": "It looks like you've entered a long string of zeros. If this was"
+      }
+    ],
+    "primary_gpu": {
+      "min_free_bytes": 1270198272,
+      "max_busy_percent": 100
+    },
+    "secondary_gpu": {
+      "min_free_bytes": 2144182272,
+      "max_busy_percent": 100
+    },
+    "secondary_sampler_pid": "2145982"
+  },
+  "text": {
+    "wall_seconds": 0.5363268610090017,
+    "usage": {
+      "completion_tokens": 3,
+      "prompt_tokens": 22,
+      "total_tokens": 25,
+      "prompt_tokens_details": {
+        "cached_tokens": 1
+      }
+    },
+    "timings": {
+      "cache_n": 1,
+      "prompt_n": 21,
+      "prompt_ms": 349.616,
+      "prompt_per_token_ms": 16.64838095238095,
+      "prompt_per_second": 60.06590087410188,
+      "predicted_n": 3,
+      "predicted_ms": 185.457,
+      "predicted_per_token_ms": 61.818999999999996,
+      "predicted_per_second": 16.176256490722917
+    },
+    "finish_reason": "stop",
+    "content_sha256": "06bfa6e648ed6023d697a1842ef5691f552d7aa5818edd705d7354a224cf0121",
+    "content_preview": "Да."
+  },
+  "vision": {
+    "wall_seconds": 11.305142419878393,
+    "usage": {
+      "completion_tokens": 50,
+      "prompt_tokens": 1117,
+      "total_tokens": 1167,
+      "prompt_tokens_details": {
+        "cached_tokens": 1
+      }
+    },
+    "timings": {
+      "cache_n": 1,
+      "prompt_n": 1116,
+      "prompt_ms": 6897.882,
+      "prompt_per_token_ms": 6.180897849462365,
+      "prompt_per_second": 161.78879255980314,
+      "predicted_n": 50,
+      "predicted_ms": 4343.149,
+      "predicted_per_token_ms": 86.86298000000001,
+      "predicted_per_second": 11.512384217073832
+    },
+    "finish_reason": "stop",
+    "content_sha256": "b1c33275c05d3194703eac740b77a6b3171213334263e1d7dd9083c40729513c",
+    "content_preview": "На изображении представлен регулярный геометрический узор в виде шахматной доски (сетки), состоящий из чередующихся маленьких квадратов ярко-зеленого и пурпурного (фиолетового) цветов.",
+    "source_png_bytes": 51712
+  },
+  "health_after": {
+    "status": "ok"
+  },
+  "slots_after": [
+    {
+      "id": 0,
+      "n_ctx": 163840,
+      "speculative": false,
+      "is_processing": false,
+      "id_task": 396,
+      "n_prompt_tokens": 24,
+      "n_prompt_tokens_processed": 21,
+      "n_prompt_tokens_cache": 0,
+      "params": {
+        "seed": 42,
+        "temperature": 0.0,
+        "dynatemp_range": 0.0,
+        "dynatemp_exponent": 1.0,
+        "top_k": 1,
+        "top_p": 0.949999988079071,
+        "min_p": 0.05000000074505806,
+        "top_n_sigma": -1.0,
+        "xtc_probability": 0.0,
+        "xtc_threshold": 0.10000000149011612,
+        "typical_p": 1.0,
+        "repeat_last_n": 64,
+        "repeat_penalty": 1.0,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0,
+        "dry_multiplier": 0.0,
+        "dry_base": 1.75,
+        "dry_allowed_length": 2,
+        "dry_penalty_last_n": 163840,
+        "mirostat": 0,
+        "mirostat_tau": 5.0,
+        "mirostat_eta": 0.10000000149011612,
+        "max_tokens": 32,
+        "n_predict": 32,
+        "n_keep": 0,
+        "n_discard": 0,
+        "ignore_eos": false,
+        "stream": false,
+        "n_probs": 0,
+        "min_keep": 0,
+        "chat_format": "peg-gemma4",
+        "reasoning_format": "deepseek",
+        "reasoning_in_content": false,
+        "generation_prompt": "<|turn>model\n<|channel>thought\n<channel|>",
+        "samplers": [
+          "penalties",
+          "dry",
+          "top_n_sigma",
+          "top_k",
+          "typ_p",
+          "top_p",
+          "min_p",
+          "xtc",
+          "temperature"
+        ],
+        "speculative.types": "none",
+        "timings_per_token": false,
+        "post_sampling_probs": false,
+        "backend_sampling": false,
+        "lora": []
+      },
+      "next_token": [
+        {
+          "has_next_token": false,
+          "has_new_line": false,
+          "n_remain": 29,
+          "n_decoded": 3
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "n_ctx": 163840,
+      "speculative": false,
+      "is_processing": false,
+      "id_task": 401,
+      "n_prompt_tokens": 1166,
+      "n_prompt_tokens_processed": 1116,
+      "n_prompt_tokens_cache": 0,
+      "params": {
+        "seed": 42,
+        "temperature": 0.0,
+        "dynatemp_range": 0.0,
+        "dynatemp_exponent": 1.0,
+        "top_k": 1,
+        "top_p": 0.949999988079071,
+        "min_p": 0.05000000074505806,
+        "top_n_sigma": -1.0,
+        "xtc_probability": 0.0,
+        "xtc_threshold": 0.10000000149011612,
+        "typical_p": 1.0,
+        "repeat_last_n": 64,
+        "repeat_penalty": 1.0,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0,
+        "dry_multiplier": 0.0,
+        "dry_base": 1.75,
+        "dry_allowed_length": 2,
+        "dry_penalty_last_n": 163840,
+        "mirostat": 0,
+        "mirostat_tau": 5.0,
+        "mirostat_eta": 0.10000000149011612,
+        "max_tokens": 64,
+        "n_predict": 64,
+        "n_keep": 0,
+        "n_discard": 0,
+        "ignore_eos": false,
+        "stream": false,
+        "n_probs": 0,
+        "min_keep": 0,
+        "chat_format": "peg-gemma4",
+        "reasoning_format": "deepseek",
+        "reasoning_in_content": false,
+        "generation_prompt": "<|turn>model\n<|channel>thought\n<channel|>",
+        "samplers": [
+          "penalties",
+          "dry",
+          "top_n_sigma",
+          "top_k",
+          "typ_p",
+          "top_p",
+          "min_p",
+          "xtc",
+          "temperature"
+        ],
+        "speculative.types": "none",
+        "timings_per_token": false,
+        "post_sampling_probs": false,
+        "backend_sampling": false,
+        "lora": []
+      },
+      "next_token": [
+        {
+          "has_next_token": false,
+          "has_new_line": false,
+          "n_remain": 14,
+          "n_decoded": 50
+        }
+      ]
+    }
+  ],
+  "units_after": {
+    "primary": {
+      "MainPID": "662933",
+      "NRestarts": "0",
+      "MemoryCurrent": "902737920"
+    },
+    "secondary": {
+      "MainPID": "2139044",
+      "NRestarts": "0",
+      "MemoryCurrent": "64778240"
+    },
+    "primary_exe": "/mnt/ssd/llm-distributed/candidates/llama-b10076/llama-server",
+    "secondary_exe": "/opt/llm-rpc/candidates/llama-b10076/ggml-rpc-server"
+  },
+  "disk_after": {
+    "primary": "/dev/sda         921846836 312400432 562545396      36% /mnt/ssd",
+    "secondary": "/dev/mapper/pve-root    98497780 28955452  64492780      31% /"
+  },
+  "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+  "dpm_primary": "high",
+  "power_profile_primary": "5        COMPUTE*:",
+  "dpm_secondary": "high",
+  "power_profile_secondary": "5        COMPUTE*:",
+  "finished_at": "2026-07-22T03:32:28.386838+00:00"
+}

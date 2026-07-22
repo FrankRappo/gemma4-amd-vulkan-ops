@@ -1,0 +1,13 @@
+diff --git a/ggml/src/ggml-vulkan/ggml-vulkan.cpp b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+index c3fd436a..1cae1185 100644
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -4888,7 +4888,7 @@ static void ggml_vk_load_shaders(vk_device& device, vk_pipeline requested) {
+     uint32_t rm_stdq = 1;
+     uint32_t rm_kq = 2;
+     uint32_t rm_stdq_int = 1;
+-    uint32_t rm_kq_int = 1;
++    uint32_t rm_kq_int = 2;
+     auto const &rm_iq_int = [](uint32_t i) { return i == 0 ? 8u : 4u; };
+     if (device->vendor_id == VK_VENDOR_ID_AMD) {
+         if (device->architecture == AMD_GCN) {

@@ -1,0 +1,38 @@
+{
+  "label": "PROFILE_B10076",
+  "base_url": "http://127.0.0.1:8080",
+  "configuration": {
+    "target_prompt_tokens": 4096,
+    "generation_tokens": 64,
+    "samples": 1,
+    "temperature": 0,
+    "top_k": 1,
+    "seed": 42,
+    "cache_prompt": false,
+    "forced_single_path_grammar": true,
+    "idle_window_seconds": 1.0
+  },
+  "summary": {
+    "samples": 1,
+    "median_prompt_tps": 337.2967138651436,
+    "mean_prompt_tps": 337.2967138651436,
+    "median_generation_tps": 10.953965446742933,
+    "mean_generation_tps": 10.953965446742933,
+    "total_wall_seconds": 17.992914374917746
+  },
+  "results": [
+    {
+      "sample": 1,
+      "requested_prompt_tokens": 4094,
+      "prompt_tokens": 4095,
+      "prompt_ms": 12140.646,
+      "prompt_per_second": 337.2967138651436,
+      "predicted_tokens": 64,
+      "predicted_ms": 5842.633,
+      "predicted_per_second": 10.953965446742933,
+      "wall_seconds": 17.992914374917746,
+      "output_sha256": "1e0037d9c1eb1909201828979cd5ff4c24439096f2e911fbc6460d80ed230429",
+      "output": " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    }
+  ]
+}

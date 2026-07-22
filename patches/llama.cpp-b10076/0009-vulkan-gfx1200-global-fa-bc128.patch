@@ -1,0 +1,177 @@
+diff --git a/ggml/src/ggml-vulkan/ggml-vulkan.cpp b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+index c3fd436a..a55f4f73 100644
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -3428,7 +3428,7 @@ struct vk_fa_tuning_params {
+ };
+
+ static bool ggml_vk_flash_attn_scalar_shmem_support(const vk_device& device, const vk_fa_tuning_params& params, uint32_t hsk, uint32_t hsv, bool f32acc, ggml_type k_type, ggml_type v_type);
+-static bool ggml_vk_flash_attn_coopmat_shmem_support(const vk_device& device, const vk_fa_tuning_params& params, uint32_t hsk, uint32_t hsv, bool f32acc, ggml_type k_type = GGML_TYPE_F16);
++static bool ggml_vk_flash_attn_coopmat_shmem_support(const vk_device& device, const vk_fa_tuning_params& params, uint32_t hsk, uint32_t hsv, bool f32acc, ggml_type k_type, ggml_type v_type, uint32_t n_kv);
+
+ static vk_fa_tuning_params get_fa_tuning_params_scalar(const vk_device& device, uint32_t hsk, uint32_t hsv, uint32_t n_rows, uint32_t n_kv, ggml_type k_type, ggml_type v_type, bool f32acc) {
+
+@@ -3506,10 +3506,6 @@ static vk_fa_tuning_params get_fa_tuning_params_scalar(const vk_device& device,
+ }
+
+ static vk_fa_tuning_params get_fa_tuning_params_coopmat1(const vk_device& device, uint32_t hsk, uint32_t hsv, uint32_t n_rows, uint32_t n_kv, ggml_type k_type, ggml_type v_type, bool f32acc) {
+-    GGML_UNUSED(n_rows);
+-    GGML_UNUSED(n_kv);
+-    GGML_UNUSED(k_type);
+-    GGML_UNUSED(v_type);
+     GGML_UNUSED(f32acc);
+
+     vk_fa_tuning_params result{};
+@@ -3520,7 +3516,19 @@ static vk_fa_tuning_params get_fa_tuning_params_coopmat1(const vk_device& device
+     const uint32_t coopmat_block_rows = 16;
+     const uint32_t coopmat_block_cols = 16;
+
+-    const uint32_t num_subgroups = 4;
++    // Gemma 4 global-attention layers use 512-wide F16 K/V heads. On GFX1200,
++    // an aligned 128-column tile lets eight wave64 subgroups reuse one Q tile
++    // and halves the online-softmax loop count. The shader specializes away
++    // the V staging buffer for this direct-load case so the workgroup remains
++    // inside the 64 KiB LDS budget. Local 256-wide layers and unaligned tails
++    // retain the upstream four-subgroup/Bc=64 path.
++    const bool gfx1200_global_aligned_f16 =
++        device->vendor_id == VK_VENDOR_ID_AMD &&
++        device->properties.deviceID == 0x7590 &&
++        hsk == 512 && hsv == 512 && n_rows > 1 &&
++        k_type == GGML_TYPE_F16 && v_type == GGML_TYPE_F16 &&
++        (n_kv % 128) == 0;
++    const uint32_t num_subgroups = gfx1200_global_aligned_f16 ? 8 : 4;
+
+     result.block_rows = coopmat_block_rows;
+     result.block_cols = coopmat_block_cols * num_subgroups;
+@@ -3584,7 +3592,7 @@ static vk_fa_tuning_params get_fa_tuning_params(const vk_device& device, uint32_
+         bool shape_ok = (f32acc && device->coopmat_support_16x16x16_f32acc) ||
+                         (!f32acc && device->coopmat_support_16x16x16_f16acc);
+         const vk_fa_tuning_params params = get_fa_tuning_params_coopmat1(device, hsk, hsv, n_rows, n_kv, k_type, v_type, f32acc);
+-        bool shmem_ok = ggml_vk_flash_attn_coopmat_shmem_support(device, params, hsk, hsv, f32acc, k_type);
++        bool shmem_ok = ggml_vk_flash_attn_coopmat_shmem_support(device, params, hsk, hsv, f32acc, k_type, v_type, n_kv);
+
+         if (!shape_ok || !shmem_ok) {
+             path = FA_SCALAR;
+@@ -10345,7 +10353,7 @@ static bool ggml_vk_flash_attn_scalar_shmem_support(const vk_device& device, con
+     return supported;
+ }
+
+-static bool ggml_vk_flash_attn_coopmat_shmem_support(const vk_device& device, const vk_fa_tuning_params& params, uint32_t hsk, uint32_t hsv, bool f32acc, ggml_type k_type) {
++static bool ggml_vk_flash_attn_coopmat_shmem_support(const vk_device& device, const vk_fa_tuning_params& params, uint32_t hsk, uint32_t hsv, bool f32acc, ggml_type k_type, ggml_type v_type, uint32_t n_kv) {
+     // Needs to be kept up to date on shader changes
+     const uint32_t Br = params.block_rows;
+     const uint32_t Bc = params.block_cols;
+@@ -10366,14 +10374,21 @@ static bool ggml_vk_flash_attn_coopmat_shmem_support(const vk_device& device, co
+     const uint32_t Qf = Br * qstride * f16vec4;
+
+     const uint32_t psh_stride = Br / 4 + 2;
+-    const uint32_t Psh = Bc * psh_stride * f16vec4;
++    const uint32_t psh_wide_stride = Br + 2;
++    const uint32_t Psh = row_split <= 4 ?
++        Bc * psh_stride * f16vec4 : Bc * psh_wide_stride * sizeof(ggml_fp16_t);
+
+     const uint32_t sfshstride = (hsk <= 128) ? (Br + 8) : Br;
+     const uint32_t sfsh = Bc * sfshstride * acctype;
+
+     const uint32_t kvshstride = (params.shmem_staging ? std::max(hsk_pad, hsv_pad) : MatBr) / 4 + 2;
+     const uint32_t vsh_stride = MatBc / 4 * row_split;
+-    const uint32_t ksh = ((kvshstride >= vsh_stride) ? (Bc * kvshstride) : (Bc * vsh_stride)) * f16vec4;
++    const bool direct_aligned_f16_v =
++        !params.shmem_staging && v_type == GGML_TYPE_F16 &&
++        (n_kv % Bc) == 0;
++    const uint32_t allocated_vsh_stride = direct_aligned_f16_v ? 1 : vsh_stride;
++    const uint32_t ksh =
++        ((kvshstride >= allocated_vsh_stride) ? (Bc * kvshstride) : (Bc * allocated_vsh_stride)) * f16vec4;
+
+     // BF16 PVMat accumulator is f32 (no bf16 accumulator support), so pvsh is vec4 (16 bytes)
+     const uint32_t pvsh_elem_size = (k_type == GGML_TYPE_BF16) ? 16u : f16vec4;
+diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/flash_attn_cm1.comp b/ggml/src/ggml-vulkan/vulkan-shaders/flash_attn_cm1.comp
+index 16178e57..1e2724e4 100644
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/flash_attn_cm1.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/flash_attn_cm1.comp
+@@ -45,7 +45,11 @@ const uint32_t qstride = HSK_pad / 4 + 2;
+ shared FLOAT_TYPEV4 Qf[Br * qstride];
+
+ const uint psh_stride = Br / 4 + 2;
+-shared FLOAT_TYPEV4 Psh[Bc * psh_stride];
++shared FLOAT_TYPEV4 Psh[(row_split <= 4) ? Bc * psh_stride : 1];
++// Eight-subgroup Bc=128 workgroups own two rows per subgroup. Store those
++// probabilities as scalars because a vec4 would cross subgroup ownership.
++const uint psh_wide_stride = Br + 2;
++shared FLOAT_TYPE PshWide[(row_split > 4) ? Bc * psh_wide_stride : 1];
+
+ // Avoid padding for hsk==256 to make it fit in 48KB shmem.
+ const uint32_t sfshstride = (HSK <= 128) ? (Br / 4 + 2) : Br / 4;
+@@ -55,7 +59,11 @@ const uint32_t D_pad = HSK_pad > HSV_pad ? HSK_pad : HSV_pad;
+ const uint32_t kvsh_stride = (SHMEM_STAGING != 0 ? D_pad : MatBr) / 4 + 2;
+ const uint v_cols = MatBc / 4 * row_split; // total cols, 4 vec4s per MatBc * number of subgroups
+ const uint vsh_stride = v_cols;
+-shared FLOAT_TYPEV4 kvsh[(kvsh_stride >= vsh_stride) ? (Bc * kvsh_stride) : (Bc * vsh_stride)];
++// Aligned F16 values are loaded directly by coopMatLoad. Specialize their
++// unused V staging footprint away so Bc=128 fits in GFX1200's 64 KiB LDS.
++// Quantized or clamped variants retain the full per-subgroup staging layout.
++const uint allocated_vsh_stride = (USE_DECODE_V || KV_bounds_check) ? vsh_stride : 1;
++shared FLOAT_TYPEV4 kvsh[(kvsh_stride >= allocated_vsh_stride) ? (Bc * kvsh_stride) : (Bc * allocated_vsh_stride)];
+
+ const uint32_t osh_stride = row_split * MatBr / 4;
+ shared O_TYPEV4 pvsh[MatBc * osh_stride];
+@@ -374,21 +382,35 @@ void main() {
+             }
+         }
+
+-        // Calculate and store Pf in Psh
++        // Calculate and store Pf in Psh. The upstream vec4 layout is kept for
++        // four subgroups. Bc=128 uses eight subgroups (two rows each), so use a
++        // scalar layout that never reads another subgroup's Mf registers.
+         [[unroll]] for (uint32_t c = 0; c < cols_per_thread; ++c) {
+             const uint col = c * cols_per_iter + col_tid;
+
+-            [[unroll]] for (uint32_t r = 0; r < rows_per_thread; r += 4) {
+-                const uint row = tile_row(r);
+-                if (KV_bounds_check && j * Bc + col >= KV) {
+-                    Psh[col * psh_stride + row / 4] = FLOAT_TYPEV4(0.0f);
+-                } else {
+-                    const vec4 mfvec = vec4(Mf[r], Mf[r + 1], Mf[r + 2], Mf[r + 3]);
+-                    const FLOAT_TYPEV4 Pf = FLOAT_TYPEV4(exp(vec4(sfsh[row / 4 + col * sfshstride]) - mfvec));
+-                    [[unroll]] for (uint32_t vec_idx = 0; vec_idx < 4; ++vec_idx) {
+-                        Lf[r + vec_idx] += Pf[vec_idx];
++            if (row_split <= 4) {
++                [[unroll]] for (uint32_t r = 0; r < rows_per_thread; r += 4) {
++                    const uint row = tile_row(r);
++                    if (KV_bounds_check && j * Bc + col >= KV) {
++                        Psh[col * psh_stride + row / 4] = FLOAT_TYPEV4(0.0f);
++                    } else {
++                        const vec4 mfvec = vec4(Mf[r], Mf[r + 1], Mf[r + 2], Mf[r + 3]);
++                        const FLOAT_TYPEV4 Pf = FLOAT_TYPEV4(exp(vec4(sfsh[row / 4 + col * sfshstride]) - mfvec));
++                        [[unroll]] for (uint32_t vec_idx = 0; vec_idx < 4; ++vec_idx) {
++                            Lf[r + vec_idx] += Pf[vec_idx];
++                        }
++                        Psh[col * psh_stride + row / 4] = Pf;
++                    }
++                }
++            } else {
++                [[unroll]] for (uint32_t r = 0; r < rows_per_thread; ++r) {
++                    const uint row = tile_row(r);
++                    FLOAT_TYPE Pf = FLOAT_TYPE(0.0f);
++                    if (!KV_bounds_check || j * Bc + col < KV) {
++                        Pf = FLOAT_TYPE(exp(float(sfsh[row / 4 + col * sfshstride][row % 4]) - Mf[r]));
++                        Lf[r] += float(Pf);
+                     }
+-                    Psh[col * psh_stride + row / 4] = Pf;
++                    PshWide[col * psh_wide_stride + row] = Pf;
+                 }
+             }
+         }
+@@ -474,7 +496,11 @@ void main() {
+
+             if (hsv_offset < HSV_pad) {
+                 [[unroll]] for (uint32_t bc_chunk = 0; bc_chunk < Bc / MatBc; ++bc_chunk) {
+-                    coopMatLoad(KMat, Psh, bc_chunk * MatBc * psh_stride, psh_stride, gl_CooperativeMatrixLayoutColumnMajor);
++                    if (row_split <= 4) {
++                        coopMatLoad(KMat, Psh, bc_chunk * MatBc * psh_stride, psh_stride, gl_CooperativeMatrixLayoutColumnMajor);
++                    } else {
++                        coopMatLoad(KMat, PshWide, bc_chunk * MatBc * psh_wide_stride, psh_wide_stride, gl_CooperativeMatrixLayoutColumnMajor);
++                    }
+
+                     if (SHMEM_STAGING == 0) {
+                     if (!USE_DECODE_V && !KV_bounds_check) {

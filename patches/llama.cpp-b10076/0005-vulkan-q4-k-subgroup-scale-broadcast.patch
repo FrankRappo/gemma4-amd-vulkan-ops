@@ -1,0 +1,41 @@
+diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp
+index 18d441ead40e11f7d86f924b8af138e31a20b8bb..b6ce1c360cc2e69fb1dc83eae655ded58f364d00 100644
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp
+@@ -2,6 +2,8 @@
+
+ #extension GL_EXT_shader_explicit_arithmetic_types_int32 : require
+ #extension GL_EXT_integer_dot_product : require
++#extension GL_KHR_shader_subgroup_basic : require
++#extension GL_KHR_shader_subgroup_shuffle : require
+
+ #define MMQ
+ #define NEEDS_IQ1S_GRID_GPU
+diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl
+index a5403ac82121d5294b3b46426ba46a900450efa3..a210713c37572ddb3058c5b72e65d10163c8c7cd 100644
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl
+@@ -369,7 +369,23 @@ FLOAT_TYPE mmvq_dot_product(const uint ib_a, const uint iqs) {
+     int32_t q_sum = 0;
+
+     const i32vec4 qs_a = repack4(ib_a, iqs * 4);
++
++#if defined(DATA_A_Q4_K)
++    // Adjacent lanes process the two 16-value halves of the same Q4_K/Q8_1
++    // block and therefore need identical dm/scale values. Load them in the
++    // even lane and broadcast to its partner while preserving the original
++    // lane mapping, dot-product sequence and subgroup reduction order.
++    vec2 dm_scale = vec2(0.0f);
++    if ((gl_SubgroupInvocationID & 1u) == 0u) {
++        dm_scale = get_dm_scale(ib_a, iqs * 4);
++    }
++    const vec2 peer_dm_scale = subgroupShuffleXor(dm_scale, 1u);
++    if ((gl_SubgroupInvocationID & 1u) != 0u) {
++        dm_scale = peer_dm_scale;
++    }
++#else
+     const vec2 dm_scale = get_dm_scale(ib_a, iqs * 4);
++#endif
+
+     q_sum += dotPacked4x8EXT(qs_a.x, cache_b_qs[0]);
+     q_sum += dotPacked4x8EXT(qs_a.y, cache_b_qs[1]);

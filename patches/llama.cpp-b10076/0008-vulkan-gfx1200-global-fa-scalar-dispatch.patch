@@ -1,0 +1,19 @@
+diff --git a/ggml/src/ggml-vulkan/ggml-vulkan.cpp b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+index 54b0b37cf..000000000 100644
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -3579,6 +3579,14 @@ static vk_fa_tuning_params get_fa_tuning_params(const vk_device& device, uint32_
+         path = FA_SCALAR;
+     }
+
++    // Gemma 4 global-attention layers use HSK=HSV=512. Keep their dispatch
++    // independent from the 256-wide local layers so GFX1200 can compare the
++    // scalar and cooperative-matrix paths without changing either kernel.
++    if (path == FA_COOPMAT1 && device->vendor_id == VK_VENDOR_ID_AMD &&
++        device->properties.deviceID == 0x7590 && hsk == 512 && hsv == 512) {
++        path = FA_SCALAR;
++    }
++
+     if (path == FA_COOPMAT1) {
+         bool shape_ok = (f32acc && device->coopmat_support_16x16x16_f32acc) ||
+                         (!f32acc && device->coopmat_support_16x16x16_f16acc);

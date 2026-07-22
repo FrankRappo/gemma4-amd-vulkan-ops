@@ -1,0 +1,313 @@
+{
+  "date": "2026-07-22",
+  "runtime": "llama.cpp b10076",
+  "baseline_artifact": "spec-b10076-control-a-20260722.json",
+  "baseline_repeat_artifact": "spec-b10076-control-b-20260722.json",
+  "acceptance": {
+    "exact_outputs": true,
+    "minimum_median_speedup_ratio": 1.05,
+    "maximum_wall_ratio": 1.0
+  },
+  "control_repeat_exact": true,
+  "best_exact_candidate": "spec-b10076-ngram-simple-default-warm-20260722.json",
+  "fastest_non_exact_candidate": "spec-b10076-ngram-mod-default-warm-20260722.json",
+  "production_decision": "SPECULATIVE_MODE=none",
+  "candidates": [
+    {
+      "artifact": "spec-b10076-control-a-20260722.json",
+      "label": "B10076_CONTROL_A",
+      "median_predicted_tps": 11.74028617614509,
+      "median_speedup_ratio": 1.0,
+      "total_wall_seconds": 116.9076299648732,
+      "wall_ratio": 1.0,
+      "exact_output_mismatches": [],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-control-b-20260722.json",
+      "label": "B10076_CONTROL_B",
+      "median_predicted_tps": 11.765121723956241,
+      "median_speedup_ratio": 1.0021154124727907,
+      "total_wall_seconds": 116.80090733175166,
+      "wall_ratio": 0.9990871200352484,
+      "exact_output_mismatches": [],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-mtp-n1-20260722.json",
+      "label": "B10076_MTP_N1",
+      "median_predicted_tps": 14.637694859651202,
+      "median_speedup_ratio": 1.2467919980854736,
+      "total_wall_seconds": 96.59195460146293,
+      "wall_ratio": 0.826224555492961,
+      "exact_output_mismatches": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-mtp-n1-cpu-sampling-20260722.json",
+      "label": "B10076_MTP_N1_CPU_SAMPLING",
+      "median_predicted_tps": 13.978723147781604,
+      "median_speedup_ratio": 1.1906628968026998,
+      "total_wall_seconds": 100.95878878678195,
+      "wall_ratio": 0.8635774142125425,
+      "exact_output_mismatches": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-mtp-n1-pmin-025-20260722.json",
+      "label": "B10076_MTP_N1_PMIN_025",
+      "median_predicted_tps": 14.649746480557678,
+      "median_speedup_ratio": 1.2478185165813314,
+      "total_wall_seconds": 96.70976975513622,
+      "wall_ratio": 0.8272323182344408,
+      "exact_output_mismatches": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-mtp-n1-pmin-050-20260722.json",
+      "label": "B10076_MTP_N1_PMIN_050",
+      "median_predicted_tps": 14.747850003301703,
+      "median_speedup_ratio": 1.256174660654153,
+      "total_wall_seconds": 97.49491703999229,
+      "wall_ratio": 0.8339482809572499,
+      "exact_output_mismatches": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-mtp-n1-pmin-080-20260722.json",
+      "label": "B10076_MTP_N1_PMIN_080",
+      "median_predicted_tps": 13.819310972058236,
+      "median_speedup_ratio": 1.1770846778963093,
+      "total_wall_seconds": 103.22245572926477,
+      "wall_ratio": 0.8829402816589442,
+      "exact_output_mismatches": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-mtp-n1-pmin-100-20260722.json",
+      "label": "B10076_MTP_N1_PMIN_100",
+      "median_predicted_tps": 8.988125782615004,
+      "median_speedup_ratio": 0.7655797863665232,
+      "total_wall_seconds": 149.69988361443393,
+      "wall_ratio": 1.2804971211837388,
+      "exact_output_mismatches": [
+        1,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-mtp-n2-20260722.json",
+      "label": "B10076_MTP_N2",
+      "median_predicted_tps": 14.580338553162072,
+      "median_speedup_ratio": 1.2419065714758846,
+      "total_wall_seconds": 96.684689280577,
+      "wall_ratio": 0.8270177858333755,
+      "exact_output_mismatches": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-mtp-n4-20260722.json",
+      "label": "B10076_MTP_N4",
+      "median_predicted_tps": 14.619017141184333,
+      "median_speedup_ratio": 1.2452010898072052,
+      "total_wall_seconds": 96.53290124516934,
+      "wall_ratio": 0.8257194271594953,
+      "exact_output_mismatches": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-mtp-n8-20260722.json",
+      "label": "B10076_MTP_N8",
+      "median_predicted_tps": 14.643015787836624,
+      "median_speedup_ratio": 1.2472452177179076,
+      "total_wall_seconds": 96.6655436847359,
+      "wall_ratio": 0.8268540189701958,
+      "exact_output_mismatches": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-ngram-mod-default-cold-20260722.json",
+      "label": "B10076_NGRAM_MOD_DEFAULT_COLD",
+      "median_predicted_tps": 11.767190920321383,
+      "median_speedup_ratio": 1.0022916599964113,
+      "total_wall_seconds": 116.94108130573295,
+      "wall_ratio": 1.0002861347960763,
+      "exact_output_mismatches": [],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-ngram-mod-default-warm-20260722.json",
+      "label": "B10076_NGRAM_MOD_DEFAULT_WARM",
+      "median_predicted_tps": 18.438435007705923,
+      "median_speedup_ratio": 1.5705268790781863,
+      "total_wall_seconds": 79.10126069770195,
+      "wall_ratio": 0.6766133290142757,
+      "exact_output_mismatches": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-ngram-mod-short-cold-20260722.json",
+      "label": "B10076_NGRAM_MOD_SHORT_COLD",
+      "median_predicted_tps": 11.744176601971859,
+      "median_speedup_ratio": 1.0003313740200535,
+      "total_wall_seconds": 117.71261827624403,
+      "wall_ratio": 1.0068856781342048,
+      "exact_output_mismatches": [
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-ngram-mod-short-warm-20260722.json",
+      "label": "B10076_NGRAM_MOD_SHORT_WARM",
+      "median_predicted_tps": 11.74337711798195,
+      "median_speedup_ratio": 1.0002632765326573,
+      "total_wall_seconds": 113.13844837993383,
+      "wall_ratio": 0.9677593191644389,
+      "exact_output_mismatches": [
+        1,
+        2,
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-ngram-simple-default-cold-20260722.json",
+      "label": "B10076_NGRAM_SIMPLE_DEFAULT_COLD",
+      "median_predicted_tps": 11.74097717507162,
+      "median_speedup_ratio": 1.0000588570769198,
+      "total_wall_seconds": 116.83921902929433,
+      "wall_ratio": 0.9994148291638499,
+      "exact_output_mismatches": [],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-ngram-simple-default-warm-20260722.json",
+      "label": "B10076_NGRAM_SIMPLE_DEFAULT_WARM",
+      "median_predicted_tps": 11.771137398722317,
+      "median_speedup_ratio": 1.002627808395328,
+      "total_wall_seconds": 116.52495977771468,
+      "wall_ratio": 0.996726730434331,
+      "exact_output_mismatches": [],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-ngram-simple-short-cold-20260722.json",
+      "label": "B10076_NGRAM_SIMPLE_SHORT_COLD",
+      "median_predicted_tps": 11.602277723585829,
+      "median_speedup_ratio": 0.9882448817270162,
+      "total_wall_seconds": 119.85231028101407,
+      "wall_ratio": 1.0251880935147317,
+      "exact_output_mismatches": [
+        1,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "go": false
+    },
+    {
+      "artifact": "spec-b10076-ngram-simple-short-warm-20260722.json",
+      "label": "B10076_NGRAM_SIMPLE_SHORT_WARM",
+      "median_predicted_tps": 11.656413482669972,
+      "median_speedup_ratio": 0.9928559924164764,
+      "total_wall_seconds": 119.42529001622461,
+      "wall_ratio": 1.0215354639565262,
+      "exact_output_mismatches": [
+        1,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "go": false
+    }
+  ]
+}

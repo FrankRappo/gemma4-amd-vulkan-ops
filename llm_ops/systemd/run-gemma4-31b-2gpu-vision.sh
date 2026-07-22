@@ -5,9 +5,11 @@ BASE=${BASE:-/mnt/ssd/llm-distributed}
 RUNTIME_ROOT=${RUNTIME_ROOT:-$BASE/runtime/llama.cpp-b10012-vulkan-x64/llama-b10012}
 MODEL=${MODEL:-$BASE/models/gemma-4-31b-abliterated-Q4_K_M.gguf}
 MMPROJ=${MMPROJ:-$BASE/models/vision/mmproj-gemma-4-31B-it-Q8_0.gguf}
-DRAFT_MODEL=${DRAFT_MODEL:-$BASE/models/draft/gemma-4-31B-it-assistant-Q8_0.gguf}
+DRAFT_MODEL=${DRAFT_MODEL:-$BASE/models/draft/gemma-4-31B-it-assistant-Q8_0-b10012.gguf}
+DRAFT_DEVICE=${DRAFT_DEVICE:-Vulkan0,RPC0}
 RPC_ADDR=${RPC_ADDR:-10.30.0.2:50053}
 RPC_WAIT_SECONDS=${RPC_WAIT_SECONDS:-180}
+TENSOR_SPLIT=${TENSOR_SPLIT:-1,1}
 # Verified production profile for two 16 GiB-class AMD GPUs. CTX_SIZE is the
 # total KV-cache budget; llama.cpp divides it equally between parallel slots.
 CTX_SIZE=${CTX_SIZE:-327680}
@@ -15,12 +17,35 @@ PARALLEL=${PARALLEL:-2}
 HOST=${HOST:-127.0.0.1}
 PORT=${PORT:-8080}
 ENABLE_MTP=${ENABLE_MTP:-0}
+SPECULATIVE_MODE=${SPECULATIVE_MODE:-}
 MTP_N_MAX=${MTP_N_MAX:-1}
+MTP_N_MIN=${MTP_N_MIN:-0}
+MTP_P_SPLIT=${MTP_P_SPLIT:-0.10}
+MTP_P_MIN=${MTP_P_MIN:-0.00}
+MTP_BACKEND_SAMPLING=${MTP_BACKEND_SAMPLING:-1}
+NGRAM_MOD_N_MIN=${NGRAM_MOD_N_MIN:-48}
+NGRAM_MOD_N_MAX=${NGRAM_MOD_N_MAX:-64}
+NGRAM_MOD_N_MATCH=${NGRAM_MOD_N_MATCH:-24}
+NGRAM_SIMPLE_SIZE_N=${NGRAM_SIMPLE_SIZE_N:-12}
+NGRAM_SIMPLE_SIZE_M=${NGRAM_SIMPLE_SIZE_M:-48}
+NGRAM_SIMPLE_MIN_HITS=${NGRAM_SIMPLE_MIN_HITS:-1}
 VISION_MIN_TOKENS=${VISION_MIN_TOKENS:-280}
 VISION_MAX_TOKENS=${VISION_MAX_TOKENS:-1120}
 VISION_BATCH_SIZE=${VISION_BATCH_SIZE:-1280}
 VISION_UBATCH_SIZE=${VISION_UBATCH_SIZE:-1280}
 VISION_MTMD_BATCH_MAX_TOKENS=${VISION_MTMD_BATCH_MAX_TOKENS:-1280}
+
+IFS=, read -r tensor_split_primary tensor_split_secondary tensor_split_extra <<<"$TENSOR_SPLIT"
+for value in "$tensor_split_primary" "$tensor_split_secondary"; do
+  if [[ ! "$value" =~ ^[0-9]+([.][0-9]+)?$ ]] || [[ "$value" =~ ^0([.]0*)?$ ]]; then
+    echo "TENSOR_SPLIT must contain two positive numbers, got: $TENSOR_SPLIT" >&2
+    exit 2
+  fi
+done
+if [[ -n "${tensor_split_extra:-}" ]]; then
+  echo "TENSOR_SPLIT must contain exactly two values, got: $TENSOR_SPLIT" >&2
+  exit 2
+fi
 
 for value_name in \
   VISION_MIN_TOKENS \
@@ -57,6 +82,21 @@ for value_name in \
   fi
 done
 
+if [[ -z "$SPECULATIVE_MODE" ]]; then
+  SPECULATIVE_MODE=$([[ "$ENABLE_MTP" == 1 ]] && echo mtp || echo none)
+fi
+case "$SPECULATIVE_MODE" in
+  none|mtp|ngram-mod|ngram-simple) ;;
+  *)
+    echo "unsupported SPECULATIVE_MODE=$SPECULATIVE_MODE" >&2
+    exit 2
+    ;;
+esac
+if [[ "$MTP_BACKEND_SAMPLING" != 0 && "$MTP_BACKEND_SAMPLING" != 1 ]]; then
+  echo "MTP_BACKEND_SAMPLING must be 0 or 1" >&2
+  exit 2
+fi
+
 SERVER=$RUNTIME_ROOT/llama-server
 for required in "$SERVER" "$MODEL" "$MMPROJ"; do
   if [[ ! -r "$required" ]]; then
@@ -85,7 +125,7 @@ args=(
   --rpc "$RPC_ADDR"
   --device Vulkan0,RPC0
   --split-mode layer
-  --tensor-split 1,1
+  --tensor-split "$TENSOR_SPLIT"
   --gpu-layers auto
   --ctx-size "$CTX_SIZE"
   --parallel "$PARALLEL"
@@ -107,18 +147,46 @@ args=(
   --port "$PORT"
 )
 
-if [[ "$ENABLE_MTP" == 1 ]]; then
-  if [[ ! -r "$DRAFT_MODEL" ]]; then
-    echo "MTP draft model is not readable: $DRAFT_MODEL" >&2
-    exit 1
-  fi
-  args+=(
-    --spec-type draft-mtp
-    --spec-draft-model "$DRAFT_MODEL"
-    --spec-draft-device Vulkan0
-    --spec-draft-ngl all
-    --spec-draft-n-max "$MTP_N_MAX"
-  )
-fi
+case "$SPECULATIVE_MODE" in
+  none) ;;
+  mtp)
+    if [[ ! -r "$DRAFT_MODEL" ]]; then
+      echo "MTP draft model is not readable: $DRAFT_MODEL" >&2
+      exit 1
+    fi
+    args+=(
+      --spec-type draft-mtp
+      --spec-draft-model "$DRAFT_MODEL"
+      # Gemma 4 MTP reuses the target model's late-layer KV cache.  With a
+      # two-host layer split that cache spans Vulkan0 and RPC0, so the draft
+      # scheduler must see both backends even though the assistant is small.
+      --spec-draft-device "$DRAFT_DEVICE"
+      --spec-draft-ngl all
+      --spec-draft-n-max "$MTP_N_MAX"
+      --spec-draft-n-min "$MTP_N_MIN"
+      --spec-draft-p-split "$MTP_P_SPLIT"
+      --spec-draft-p-min "$MTP_P_MIN"
+    )
+    if [[ "$MTP_BACKEND_SAMPLING" == 0 ]]; then
+      args+=(--no-spec-draft-backend-sampling)
+    fi
+    ;;
+  ngram-mod)
+    args+=(
+      --spec-type ngram-mod
+      --spec-ngram-mod-n-min "$NGRAM_MOD_N_MIN"
+      --spec-ngram-mod-n-max "$NGRAM_MOD_N_MAX"
+      --spec-ngram-mod-n-match "$NGRAM_MOD_N_MATCH"
+    )
+    ;;
+  ngram-simple)
+    args+=(
+      --spec-type ngram-simple
+      --spec-ngram-simple-size-n "$NGRAM_SIMPLE_SIZE_N"
+      --spec-ngram-simple-size-m "$NGRAM_SIMPLE_SIZE_M"
+      --spec-ngram-simple-min-hits "$NGRAM_SIMPLE_MIN_HITS"
+    )
+    ;;
+esac
 
 exec "$SERVER" "${args[@]}"

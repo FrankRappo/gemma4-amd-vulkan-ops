@@ -1,0 +1,28 @@
+{
+  "date": "2026-07-22",
+  "runtime": {
+    "tag": "b10076",
+    "commit": "305ba519ab61cdff8044922cba2347826a04453f",
+    "normalized_tree_digest": "94e044522e133313849c659de84407bc947f5309db44f8f49806df130bd5e097"
+  },
+  "command": "test-backend-ops test -b Vulkan0",
+  "primary": {
+    "device": "AMD Radeon Graphics (RADV GFX1200)",
+    "passed": 15426,
+    "total": 15426,
+    "result": "OK"
+  },
+  "secondary": {
+    "device": "AMD Radeon Graphics (RADV GFX1200)",
+    "passed": 15426,
+    "total": 15426,
+    "result": "OK"
+  },
+  "fa_global_candidates": {
+    "filter": "FLASH_ATTN_EXT hsk=512,hsv=512",
+    "bc128_primary": "112/112",
+    "bc128_secondary": "112/112",
+    "br32_primary": "112/112",
+    "br32_secondary": "112/112"
+  }
+}

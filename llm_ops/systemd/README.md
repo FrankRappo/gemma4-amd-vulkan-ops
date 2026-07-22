@@ -11,7 +11,13 @@ These files define the reversible two-host deployment:
 - logical, physical and mtmd image batch limits default to `1280`, so the full
   1120-token non-causal image chunk fits without splitting;
 - host-memory prompt caching remains disabled (`--cache-ram 0`);
-- MTP is present as an opt-in benchmark flag and is disabled by default.
+- parameterized MTP, `ngram-mod` and `ngram-simple` profiles are available for
+  paired benchmarks through `SPECULATIVE_MODE`; all are disabled by default.
+
+The MTP default points to the normalized, tensor-identical
+`gemma-4-31B-it-assistant-Q8_0-b10012.gguf` artifact. The filename records the
+normalizer generation, not a runtime restriction: it is the verified schema
+used by both b10012 and b10076. The original legacy GGUF remains unchanged.
 
 The 160K/two-slot profile was selected by a 2026-07-20 staged capacity probe.
 It retained at least 1.20 GiB free VRAM across concurrent text, dense Vision,

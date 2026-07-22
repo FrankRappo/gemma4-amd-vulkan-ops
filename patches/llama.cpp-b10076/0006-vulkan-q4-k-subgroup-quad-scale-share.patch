@@ -1,0 +1,42 @@
+diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp
+index 18d441ead..000000000 100644
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq.comp
+@@ -2,6 +2,8 @@
+
+ #extension GL_EXT_shader_explicit_arithmetic_types_int32 : require
+ #extension GL_EXT_integer_dot_product : require
++#extension GL_KHR_shader_subgroup_basic : require
++#extension GL_KHR_shader_subgroup_quad : require
+
+ #define MMQ
+ #define NEEDS_IQ1S_GRID_GPU
+diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl
+index a5403ac82..000000000 100644
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl
+@@ -369,7 +369,24 @@ FLOAT_TYPE mmvq_dot_product(const uint ib_a, const uint iqs) {
+     int32_t q_sum = 0;
+
+     const i32vec4 qs_a = repack4(ib_a, iqs * 4);
++
++#if defined(DATA_A_Q4_K)
++    // Adjacent lanes consume the two 16-value halves that share one Q4_K
++    // scale/min pair. RDNA implements the quad horizontal exchange as a DPP
++    // lane operation, so the even lane performs the metadata decode once and
++    // hands the exact value to the odd lane. The dot-product sequence, each
++    // lane's FP expression, and the subgroup reduction order stay unchanged.
++    vec2 dm_scale = vec2(0.0f);
++    if ((gl_SubgroupInvocationID & 1u) == 0u) {
++        dm_scale = get_dm_scale(ib_a, iqs * 4);
++    }
++    const vec2 peer_dm_scale = subgroupQuadSwapHorizontal(dm_scale);
++    if ((gl_SubgroupInvocationID & 1u) != 0u) {
++        dm_scale = peer_dm_scale;
++    }
++#else
+     const vec2 dm_scale = get_dm_scale(ib_a, iqs * 4);
++#endif
+
+     q_sum += dotPacked4x8EXT(qs_a.x, cache_b_qs[0]);
+     q_sum += dotPacked4x8EXT(qs_a.y, cache_b_qs[1]);
