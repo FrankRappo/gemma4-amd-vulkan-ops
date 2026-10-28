@@ -6,11 +6,16 @@ The tracked prompt used by the Telegram chat is:
 llm_ops/telegram_bot/prompts/gemma4-abliterated-system-prompt.txt
 ```
 
-It strengthens the local `Gemma 4 31B IT Abliterated` deployment identity and
-reapplies it after long history, summaries, compaction, tool results, resumed
-sessions, and Agent delegation. It tells the model not to invent a generic
-Google/policy refusal, but it still requires truthful reporting of real access,
-tool, credential, and capability limits.
+It defines the local `Gemma 4 31B IT Abliterated` identity for ordinary Telegram
+text and image chat. The 2026-10-12 revision requires direct answers without
+unsolicited moralizing, speculation about the questioner's wellbeing, or
+speeches about corporate censorship versus personal principles. Earlier
+moralizing assistant messages are not instructions to continue that style.
+
+The ordinary-chat prompt explicitly does not promise shell, network, or agent
+tools: this request path supplies none. It preserves factual uncertainty and
+specific capability limits. Claw's separate prompt describes its actual tools
+and durable execution state; do not deploy that agent prompt to ordinary chat.
 
 ## Telegram configuration
 
@@ -45,23 +50,26 @@ The patched OpenAI-compatible provider prepends the file contents to Claw's own
 generated system/tool prompt. Parent Claw turns and built-in child Agents use
 the same provider and inherit the same deployment identity. In the dedicated
 unrestricted profile the prompt also records complete tool/network/credential
-availability, a 32000-token Claw completion ceiling, the unchanged 110000-token
+availability, a 32000-token Claw completion ceiling, the 64000-token
 compaction point, and the single-child/two-slot physical constraint. The
 implementation, recreation steps, historical commit, tests, and deployment procedure are in
 [`SYSTEM_PROMPT.md`](https://github.com/FrankRappo/claw-code-parity/blob/gemma4-telegram-projects-20260720/SYSTEM_PROMPT.md).
 
 ## Consistency check
 
-The prompt is intentionally tracked in both public operational repositories so
-each repository is independently deployable. Before release, confirm the files
-match:
+Ordinary chat and Claw now have role-specific prompts. They share the direct,
+nonpaternalistic tone, but only Claw's prompt describes agent tools, autonomous
+plans, and durable project state. Their SHA-256 hashes should not match each
+other. Before release, compare each tracked prompt with its own deployed copy:
 
 ```bash
 sha256sum \
   llm_ops/telegram_bot/prompts/gemma4-abliterated-system-prompt.txt \
-  ../claw-code-parity/integrations/telegram/prompts/gemma4-abliterated-system-prompt.txt
+  /path/to/deployed/chat/gemma4-abliterated-system-prompt.txt
 ```
 
-Changing behavior should be one reviewed text edit copied to both locations.
+Verify Claw separately against the prompt in its repository. Keep the
+`SYSTEM_PROMPT_FILE` and `CLAW_SYSTEM_PROMPT_FILE` destinations independent.
 Never place Telegram tokens, API keys, hostnames, or private network addresses
-inside the prompt.
+inside either prompt. Prompt tests verify text and request injection, not a
+guarantee about every possible generated answer; also run fresh live probes.

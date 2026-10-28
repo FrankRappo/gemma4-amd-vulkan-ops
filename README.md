@@ -50,3 +50,8 @@ Deployment prompt behavior is documented in [`docs/system-prompt.md`](docs/syste
 GFX1200 driver capability work, CUDA-to-Vulkan candidate provenance,
 deterministic A/B gates and rollback are documented in
 [`docs/vulkan-rdna4-performance.md`](docs/vulkan-rdna4-performance.md).
+
+A bounded design for the next lossless decode-optimization lane—an
+RDNA4-native Q4_K layout, shape-specialized shaders, autotuning, exact-output
+gates and rollback—is documented in
+[`docs/rdna4-q4k-kernel-upgrade-proposal.md`](docs/rdna4-q4k-kernel-upgrade-proposal.md).
